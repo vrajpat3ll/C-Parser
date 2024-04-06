@@ -107,20 +107,17 @@ const string tokenTypeName(const TokenType type)
 
 const Token stringToLiteralToken(const string &literalToken)
 {
-    if (literalToken == ";")
-        return Token(TOKEN_SEMICOLON, ";");
-    if (literalToken == "(")
-        return Token(TOKEN_OPEN_PAREN, "(");
-    if (literalToken == ")")
-        return Token(TOKEN_CLOSE_PAREN, ")");
-    if (literalToken == "{")
-        return Token(TOKEN_OPEN_CURLY, "{");
-    if (literalToken == "}")
-        return Token(TOKEN_CLOSE_CURLY, "}");
-    if (literalToken == "switch")
-        return Token(TOKEN_SWITCH, "switch");
-    if (literalToken == "case")
-        return Token(TOKEN_CASE, "case");
+    if (literalToken == "=")        return Token(TOKEN_COLON, "=");
+    if (literalToken == ":")        return Token(TOKEN_COLON, ":");
+    if (literalToken == ";")        return Token(TOKEN_SEMICOLON, ";");
+    if (literalToken == "(")        return Token(TOKEN_OPEN_PAREN, "(");
+    if (literalToken == ")")        return Token(TOKEN_CLOSE_PAREN, ")");
+    if (literalToken == "{")        return Token(TOKEN_OPEN_CURLY, "{");
+    if (literalToken == "}")        return Token(TOKEN_CLOSE_CURLY, "}");
+    if (literalToken == "switch")   return Token(TOKEN_SWITCH, "switch");
+    if (literalToken == "case")     return Token(TOKEN_CASE, "case");
+    if (literalToken == "default")  return Token(TOKEN_DEFAULT, "default");
+    if (literalToken == "break")    return Token(TOKEN_BREAK, "break");
 
     return Token(TOKEN_INVALID, literalToken);
 }
@@ -152,7 +149,7 @@ bool isIdentifierStart(char x) { return isalpha(x) || x == '_'; }
 
 bool isIdentifier(char x) { return isalnum(x) || x == '_'; }
 
-// char getChar(Lexer *l) { return l->content[l->cursor]; }
+char getChar(Lexer *l) { return l->content[l->cursor]; }
 
 // TODO: unimplemented
 Token getNextToken(Lexer *l)
@@ -177,12 +174,12 @@ vector<Token> tokenise(Lexer *l)
         while (l->content[l->cursor] == ' ')
             l->cursor++;
 
-        if (isalpha((l->content)[l->cursor]))
+        if (isalpha(getChar(l)))
         {
             string tokenName = "";
-            while (isalpha(l->content[l->cursor]))
+            while (isalpha(getChar(l)))
             {
-                tokenName += l->content[l->cursor];
+                tokenName += getChar(l);
                 l->cursor++;
             }
 
@@ -207,71 +204,71 @@ vector<Token> tokenise(Lexer *l)
                 tokens.push_back(Token(TOKEN_ID, tokenName));
             }
         }
-        else if (isdigit(l->content[l->cursor]))
+        else if (isdigit(getChar(l)))
         {
             string number;
-            while (isdigit(l->content[l->cursor]))
+            while (isdigit(getChar(l)))
             {
-                number += l->content[l->cursor];
+                number += getChar(l);
                 l->cursor++;
             }
             tokens.push_back(Token(TOKEN_INT_LITERAL, number));
         }
 
-        else if (l->content[l->cursor] == '"')
+        else if (getChar(l) == '"')
         {
             string strLiteral;
             l->cursor++;
-            while (l->content[l->cursor] != '"' && l->content[l->cursor] != '\0')
+            while (getChar(l) != '"' && getChar(l) != '\0')
             {
-                strLiteral += l->content[l->cursor];
+                strLiteral += getChar(l);
                 l->cursor++;
             }
             tokens.push_back(Token(TOKEN_STR_LITERAL, strLiteral));
             l->cursor++; // skip closing quote
         }
-        else if (l->content[l->cursor] == '(')
+        else if (getChar(l) == '(')
         {
             tokens.push_back(Token(TOKEN_OPEN_PAREN, "("));
             l->cursor++;
         }
-        else if (l->content[l->cursor] == ')')
+        else if (getChar(l) == ')')
         {
             tokens.push_back(Token(TOKEN_CLOSE_PAREN, ")"));
             l->cursor++;
         }
-        else if (l->content[l->cursor] == '{')
+        else if (getChar(l) == '{')
         {
             tokens.push_back(Token(TOKEN_OPEN_CURLY, "{"));
             l->cursor++;
         }
-        else if (l->content[l->cursor] == '}')
+        else if (getChar(l) == '}')
         {
             tokens.push_back(Token(TOKEN_CLOSE_CURLY, "}"));
             l->cursor++;
         }
-        else if (l->content[l->cursor] == ';')
+        else if (getChar(l) == ';')
         {
             tokens.push_back(Token(TOKEN_SEMICOLON, ";"));
             l->cursor++;
         }
-        else if (l->content[l->cursor] == ':')
+        else if (getChar(l) == ':')
         {
             tokens.push_back(Token(TOKEN_COLON, ":"));
             l->cursor++;
         }
-        else if (l->content[l->cursor] == '=')
+        else if (getChar(l) == '=')
         {
             tokens.push_back(Token(TOKEN_EQUALS, "="));
             l->cursor++;
         }
-        else if (isOperator(l->content[l->cursor]))
+        else if (isOperator(getChar(l)))
         {
-            string op(1, l->content[l->cursor]);
+            string op(1, getChar(l));
             tokens.push_back(Token(TOKEN_OPERATOR, op));
             l->cursor++;
         }
-        else if (l->content[l->cursor] == '\0')
+        else if (getChar(l) == '\0')
         {
             tokens.push_back(Token(TOKEN_EOF, ""));
             break;
@@ -280,7 +277,7 @@ vector<Token> tokenise(Lexer *l)
         else
         { // TOKEN_INVALID
             // Handle errors (consider throwing exceptions or providing more specific error messages)
-            cerr << "Error: Unexpected character '" << l->content[l->cursor] << "'" << std::endl;
+            cerr << "Error: Unexpected character '" << getChar(l) << "'" << std::endl;
             l->cursor++;
         }
     }

@@ -6,7 +6,7 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    string filepath = "C:/CODING/CODE/Projects/CParser/tests/testSwitch.cpp";
+    string filepath = "./tests/testSwitch.cpp";
 
     if (argc == 1)
     {
@@ -31,10 +31,11 @@ int main(int argc, char *argv[])
     cout << "file contents:\n";
     cout << "---------------------------------------------\n";
     cout << content << endl;
+    cout << "---------------------------------------------";
 
     Lexer *lexer = new Lexer(content);
     auto tokens = tokenise(lexer);
-    cout << "---------------------------------------------";
+
     cout << "\n\nPrinting tokens along with the type of token:\n\n";
     for (auto &token : tokens)
     {
