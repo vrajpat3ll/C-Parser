@@ -1,6 +1,6 @@
 switch (x)
 {
-case 1:
+case 1x:
     x = 1;
     break;
 }

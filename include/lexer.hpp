@@ -83,41 +83,70 @@ const string tokenTypeName(const TokenType type)
 {
     switch (type)
     {
-    case TOKEN_EOF:         return "(end of content)\t";
-    case TOKEN_INVALID:     return "(invalid token)\t\t";
-    case TOKEN_ID:          return "(identifier)\t\t";
-    case TOKEN_OPEN_PAREN:  return "(open parenthesis)\t";
-    case TOKEN_CLOSE_PAREN: return "(close parenthesis)\t";
-    case TOKEN_OPEN_CURLY:  return "(open curly brace)\t";
-    case TOKEN_CLOSE_CURLY: return "(close curly brace)\t";
-    case TOKEN_SEMICOLON:   return "(semicolon)\t\t";
-    case TOKEN_COLON:       return "(colon)\t\t\t";
-    case TOKEN_EQUALS:      return "(equals)\t\t";
-    case TOKEN_SWITCH:      return "(switch)\t\t";
-    case TOKEN_CASE:        return "(case)\t\t\t";
-    case TOKEN_DEFAULT:     return "(default)\t\t";
-    case TOKEN_BREAK:       return "(break)\t\t\t";
-    case TOKEN_INT_LITERAL: return "(integer literal)\t";
-    case TOKEN_STR_LITERAL: return "(string literal)\t";
-    case TOKEN_OPERATOR:    return "(operator)\t\t";
-    default:                return "(Unreachable TokenType Name)\t\t";
+    case TOKEN_EOF:
+        return "(end of content)\t";
+    case TOKEN_INVALID:
+        return "(invalid token)\t\t";
+    case TOKEN_ID:
+        return "(identifier)\t\t";
+    case TOKEN_OPEN_PAREN:
+        return "(open parenthesis)\t";
+    case TOKEN_CLOSE_PAREN:
+        return "(close parenthesis)\t";
+    case TOKEN_OPEN_CURLY:
+        return "(open curly brace)\t";
+    case TOKEN_CLOSE_CURLY:
+        return "(close curly brace)\t";
+    case TOKEN_SEMICOLON:
+        return "(semicolon)\t\t";
+    case TOKEN_COLON:
+        return "(colon)\t\t\t";
+    case TOKEN_EQUALS:
+        return "(equals)\t\t";
+    case TOKEN_SWITCH:
+        return "(switch)\t\t";
+    case TOKEN_CASE:
+        return "(case)\t\t\t";
+    case TOKEN_DEFAULT:
+        return "(default)\t\t";
+    case TOKEN_BREAK:
+        return "(break)\t\t\t";
+    case TOKEN_INT_LITERAL:
+        return "(integer literal)\t";
+    case TOKEN_STR_LITERAL:
+        return "(string literal)\t";
+    case TOKEN_OPERATOR:
+        return "(operator)\t\t";
+    default:
+        return "(Unreachable TokenType Name)\t\t";
     }
     return "";
 }
 
 const Token stringToLiteralToken(const string &literalToken)
 {
-    if (literalToken == "=")        return Token(TOKEN_COLON, "=");
-    if (literalToken == ":")        return Token(TOKEN_COLON, ":");
-    if (literalToken == ";")        return Token(TOKEN_SEMICOLON, ";");
-    if (literalToken == "(")        return Token(TOKEN_OPEN_PAREN, "(");
-    if (literalToken == ")")        return Token(TOKEN_CLOSE_PAREN, ")");
-    if (literalToken == "{")        return Token(TOKEN_OPEN_CURLY, "{");
-    if (literalToken == "}")        return Token(TOKEN_CLOSE_CURLY, "}");
-    if (literalToken == "switch")   return Token(TOKEN_SWITCH, "switch");
-    if (literalToken == "case")     return Token(TOKEN_CASE, "case");
-    if (literalToken == "default")  return Token(TOKEN_DEFAULT, "default");
-    if (literalToken == "break")    return Token(TOKEN_BREAK, "break");
+    if (literalToken == "=")
+        return Token(TOKEN_COLON, "=");
+    if (literalToken == ":")
+        return Token(TOKEN_COLON, ":");
+    if (literalToken == ";")
+        return Token(TOKEN_SEMICOLON, ";");
+    if (literalToken == "(")
+        return Token(TOKEN_OPEN_PAREN, "(");
+    if (literalToken == ")")
+        return Token(TOKEN_CLOSE_PAREN, ")");
+    if (literalToken == "{")
+        return Token(TOKEN_OPEN_CURLY, "{");
+    if (literalToken == "}")
+        return Token(TOKEN_CLOSE_CURLY, "}");
+    if (literalToken == "switch")
+        return Token(TOKEN_SWITCH, "switch");
+    if (literalToken == "case")
+        return Token(TOKEN_CASE, "case");
+    if (literalToken == "default")
+        return Token(TOKEN_DEFAULT, "default");
+    if (literalToken == "break")
+        return Token(TOKEN_BREAK, "break");
 
     return Token(TOKEN_INVALID, literalToken);
 }
@@ -174,10 +203,12 @@ vector<Token> tokenise(Lexer *l)
         while (l->content[l->cursor] == ' ')
             l->cursor++;
 
-        if (isalpha(getChar(l)))
+        string tokenName = "";
+        if (isIdentifierStart(getChar(l)))
         {
-            string tokenName = "";
-            while (isalpha(getChar(l)))
+            tokenName += getChar(l);
+            l->cursor++;
+            while (isIdentifier(getChar(l)))
             {
                 tokenName += getChar(l);
                 l->cursor++;
@@ -207,11 +238,26 @@ vector<Token> tokenise(Lexer *l)
         else if (isdigit(getChar(l)))
         {
             string number;
+            number += getChar(l);
+            l->cursor++;
             while (isdigit(getChar(l)))
             {
                 number += getChar(l);
                 l->cursor++;
             }
+            if (isIdentifierStart(getChar(l)))
+            {
+                number += getChar(l);
+                l->cursor++;
+                while (isIdentifier(getChar(l)))
+                {
+                    number += getChar(l);
+                    l->cursor++;
+                }
+                tokens.push_back(Token(TOKEN_INVALID, number));
+                continue;
+            }
+
             tokens.push_back(Token(TOKEN_INT_LITERAL, number));
         }
 
@@ -273,12 +319,12 @@ vector<Token> tokenise(Lexer *l)
             tokens.push_back(Token(TOKEN_EOF, ""));
             break;
         }
-
         else
         { // TOKEN_INVALID
             // Handle errors (consider throwing exceptions or providing more specific error messages)
             cerr << "Error: Unexpected character '" << getChar(l) << "'" << std::endl;
             l->cursor++;
+            tokens.push_back(Token(TOKEN_INVALID, tokenName));
         }
     }
     return tokens;

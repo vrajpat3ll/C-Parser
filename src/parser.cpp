@@ -19,12 +19,22 @@ int main(int argc, char *argv[])
     }
 
     ifstream file(filepath);
+    // Error handling
+    if (!file.is_open())
+    {
+        cerr << "File could not be opened!" << endl;
+        return -1;
+    }
+    if (!file.good())
+    {
+        cerr << "File is not good!" << endl;
+        return 1;
+    }
     string content = "";
     string line = "";
     while (getline(file, line))
     {
-        // cout << "line: " << line << "\n\n";
-        content += line + ' ';
+        content += line + ' '; // cout << "line: " << line << "\n\n";
     }
     file.close();
 
