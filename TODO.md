@@ -4,3 +4,4 @@ Currently, the tokenize function can read through some things and this is the ou
 
 <img src="images/correctParsing.png"></img>
 <img src="images/incorrectParsing.png"></img>
+<img src="images/coloredTokenType.png"></img>
