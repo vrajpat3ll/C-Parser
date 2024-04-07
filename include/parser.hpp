@@ -66,8 +66,8 @@ void Parser::parseSwitchStatement() {
 }
 
 void Parser::error(const string &message) {
-    cerr << "Error: " << message << endl;
-    exit(1);
+    cerr << "\e[31mError: " + message+"\e[0m" << endl;
+    // not exiting the program so that all the errors can be viewed at once
 }
 
 void Parser::labeled_statement_list() {
@@ -76,10 +76,8 @@ void Parser::labeled_statement_list() {
         labeled_statement_list_();
     }
 }
-void Parser::labeled_statement_list_()
-{
-    if (currentToken.text == "case" || currentToken.text == "default")
-    {
+void Parser::labeled_statement_list_() {
+    if (currentToken.text == "case" || currentToken.text == "default") {
         labeled_statement();
         labeled_statement_list_();
     }
@@ -99,7 +97,7 @@ void Parser::labeled_statement() {
                 error("Expected ':'");
             }
         } else {
-            error("Expected constant");
+            error("Expected a constant after case");
         }
     } else if (currentToken.text == "default") {
         getNextToken();
@@ -115,7 +113,39 @@ void Parser::labeled_statement() {
 }
 
 void Parser::statement() {
-    
+    if (currentToken.type == TOKEN_ID) {
+        getNextToken();
+        if (currentToken.type == TOKEN_EQUALS_ASSIGNMENT) {
+            getNextToken();
+            expression();
+            if (currentToken.type == TOKEN_SEMICOLON) {
+                getNextToken();
+                return;
+            } else {
+                error("Expected ';'");
+            }
+        } else {
+            error("Expected '='");
+        }
+    } else if (currentToken.type == TOKEN_OPEN_PAREN) {
+        getNextToken();
+        labeled_statement_list();
+        if (currentToken.type == TOKEN_CLOSE_PAREN) {
+            return;
+        } else {
+            error("Expected '}'");
+        }
+    } else if (currentToken.text == "break") {
+        getNextToken();
+        if (currentToken.type == TOKEN_SEMICOLON) {
+            getNextToken();
+            return;
+        } else {
+            error("Expected ';'");
+        }
+    } else {
+        error("Invalid statement");
+    }
 }
 
 void Parser::expression() {

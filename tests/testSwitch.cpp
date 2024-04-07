@@ -1,7 +1,4 @@
-switch (n)
-{
-case 1:
-    break;
-default:
-    break;
+switch (n) {
+    case 1:
+        x = n - 1;
 }

@@ -1,7 +1,10 @@
-Currently, the tokenize function can read through some things and this is the output it shows.
-<br>
-<br>
 
-<img src="images/correctParsing.png"></img>
-<img src="images/incorrectParsing.png"></img>
+|What is left | Explanation |
+|-|-|
+|Statements | Parser cannot parse `statement` production properly |
+|Parse Tree | - |
+
+The tokenize function can read through some things and this is the output it shows.
+<br>
+<br>
 <img src="images/coloredTokenType.png"></img>
