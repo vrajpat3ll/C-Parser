@@ -1,13 +1,14 @@
-#define LEXER_IMPLEMENTATION_
+#define __LEXER_IMPLEMENTATION__
 #include "../include/lexer.hpp"
-// #include "../include/parser.hpp"
+#define __PARSER_IMPLEMENTATION__
+#include "../include/parser.hpp"
 
 #include <bits/stdc++.h>
 using namespace std;
 
 int main(int argc, char *argv[])
 {
-    string filepath = "./tests/testSwitch.cpp";
+    string filepath = "C:/CODING/CODE/Projects/C-Parser/tests/testSwitch.cpp";
 
     if (argc == 1)
     {
@@ -52,8 +53,8 @@ int main(int argc, char *argv[])
         cout << setw(40) << left << tokenTypeName(token.type) << ": " << token.text << endl;
     }
 
-    // Parser *parser = new Parser(tokens);
-    // parser.parse();
+    Parser *parser = new Parser(tokens);
+    parser->parseSwitchStatement();
     // parser.printTree();
 
     return 0;

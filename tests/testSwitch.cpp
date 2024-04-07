@@ -1,9 +1,7 @@
 switch (n)
 {
-case 1a1:
-    int y = n+2;
+case 1:
     break;
-
 default:
     break;
 }

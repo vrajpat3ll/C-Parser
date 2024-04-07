@@ -1,24 +1,32 @@
-`SWITCH` `(` `expression` `)` statement;
+# Grammar
+
+<br>switch_statement:
+<br>    SWITCH '(' expression ')' '{' labeled_statement_list '}'
 <br>
-<br>`expression`
-<br>	: assignment_expression
-<br>	| expression ',' assignment_expression
-<br>	;
+<br>labeled_statement_list:
+<br>    labeled_statement_list labeled_statement
+<br>    | labeled_statement
 <br>
+<br>labeled_statement:
+<br>    CASE constant ':' statement
+<br>    | DEFAULT ':' statement
 <br>
-<br>`statement`
-<br>	: labeled_statement
-<br>	| expression_statement
-<br>	;
+<br>expression:
+<br>    additive_expression
 <br>
-<br>`expression_statement`
-<br>	: `;`
-<br>	| expression `;`
-<br>	;
+<br>additive_expression:
+<br>    multiplicative_expression
+<br>    | additive_expression '+' multiplicative_expression
+<br>    | additive_expression '-' multiplicative_expression
 <br>
-<br>`labeled_statement`
-<br>	: `IDENTIFIER` `:` statement
-<br>	| `CASE` constant_expression `:` statement
-<br>	| `DEFAULT` `:` statement
-<br>	;
+<br>multiplicative_expression:
+<br>    primary_expression
+<br>    | multiplicative_expression '*' primary_expression
+<br>    | multiplicative_expression '/' primary_expression
 <br>
+<br>primary_expression:
+<br>    identifier
+<br>    | constant
+<br>    | '(' expression ')'
+
+---
