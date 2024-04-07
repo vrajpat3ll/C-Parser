@@ -1,5 +1,5 @@
-#ifndef LEXER_H_
-#define LEXER_H_
+#ifndef __C__LEXER_H__
+#define __C__LEXER_H__
 
 #include <iostream>
 #include <vector>
@@ -8,23 +8,24 @@ using namespace std;
 
 typedef enum
 {
-    TOKEN_EOF,         // End of File
-    TOKEN_INVALID,     // Invalid token
-    TOKEN_ID,          // Symbol / Identifier
-    TOKEN_OPEN_PAREN,  // (
-    TOKEN_CLOSE_PAREN, // )
-    TOKEN_OPEN_CURLY,  // {
-    TOKEN_CLOSE_CURLY, // }
-    TOKEN_SEMICOLON,   // ;
-    TOKEN_COLON,       // :
-    TOKEN_EQUALS,      // =
-    TOKEN_SWITCH,      // switch
-    TOKEN_CASE,        // case
-    TOKEN_DEFAULT,     // default
-    TOKEN_BREAK,       // break
-    TOKEN_INT_LITERAL, // Integer Literal
-    TOKEN_STR_LITERAL, // String Literal
-    TOKEN_OPERATOR,    // Operator
+    TOKEN_EOF,               // End of File
+    TOKEN_INVALID,           // Invalid token
+    TOKEN_ID,                // Symbol / Identifier
+    TOKEN_OPEN_PAREN,        // (
+    TOKEN_CLOSE_PAREN,       // )
+    TOKEN_OPEN_CURLY,        // {
+    TOKEN_CLOSE_CURLY,       // }
+    TOKEN_SEMICOLON,         // ;
+    TOKEN_COLON,             // :
+    TOKEN_EQUALS_ASSIGNMENT, // =
+    TOKEN_KEYWORD,           // keywords
+    TOKEN_SWITCH,            // switch
+    TOKEN_CASE,              // case
+    TOKEN_DEFAULT,           // default
+    TOKEN_BREAK,             // break
+    TOKEN_INT_LITERAL,       // Integer Literal
+    TOKEN_STR_LITERAL,       // String Literal
+    TOKEN_OPERATOR,          // Operator (covers +, - , * , / , % )
 } TokenType;
 
 typedef struct Token
@@ -68,59 +69,80 @@ bool isOperator(char c)
     }
     return false;
 }
+
+vector<Token> literalTokens = {
+    Token(TOKEN_OPEN_PAREN, "("),
+    Token(TOKEN_CLOSE_PAREN, ")"),
+    Token(TOKEN_OPEN_CURLY, "{"),
+    Token(TOKEN_CLOSE_CURLY, "}"),
+    Token(TOKEN_SEMICOLON, ";"),
+    Token(TOKEN_COLON, ":"),
+    Token(TOKEN_EQUALS_ASSIGNMENT, "="),
+};
+
+vector<string> keywords = {
+    "break",
+    "case",
+    "char",
+    "continue",
+    "default",
+    "double",
+    "float",
+    "int",
+    "long",
+    "return",
+    "sizeof",
+    "switch",
+};
+
+int keywords_size = keywords.size();
+
 bool isalpha(char c) { return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'); }
-const string tokenTypeName(const TokenType type);
+const string tokenTypeName(const TokenType &type);
 const Token stringToLiteralToken(const string &tokenName);
 Token getNextToken(Lexer *lexer);
 vector<Token> tokenise(Lexer *l);
-#endif
-
+// #endif
 // #ifdef LEXER_IMPLEMENTATION_
 
 /// @param type Token to get its name
-/// @return name of the type of token passed
-const string tokenTypeName(const TokenType type)
+/// @return name of the type of token passed (with some color)
+const string tokenTypeName(const TokenType &type)
 {
     switch (type)
     {
     case TOKEN_EOF:
-        return "(end of content)\t";
+        return "(\e[32mend of file\e[0m)";
     case TOKEN_INVALID:
-        return "(invalid token)\t\t";
+        return "(\e[31minvalid token\e[0m)";
     case TOKEN_ID:
-        return "(identifier)\t\t";
+        return "(\e[37midentifier\e[0m)";
     case TOKEN_OPEN_PAREN:
-        return "(open parenthesis)\t";
+        return "(\e[37mopen parenthesis\e[0m)";
     case TOKEN_CLOSE_PAREN:
-        return "(close parenthesis)\t";
+        return "(\e[37mclose parenthesis\e[0m)";
     case TOKEN_OPEN_CURLY:
-        return "(open curly brace)\t";
+        return "(\e[37mopen curly brace\e[0m)";
     case TOKEN_CLOSE_CURLY:
-        return "(close curly brace)\t";
+        return "(\e[37mclose curly brace\e[0m)";
     case TOKEN_SEMICOLON:
-        return "(semicolon)\t\t";
+        return "(\e[37msemicolon\e[0m)";
     case TOKEN_COLON:
-        return "(colon)\t\t\t";
-    case TOKEN_EQUALS:
-        return "(equals)\t\t";
-    case TOKEN_SWITCH:
-        return "(switch)\t\t";
-    case TOKEN_CASE:
-        return "(case)\t\t\t";
-    case TOKEN_DEFAULT:
-        return "(default)\t\t";
-    case TOKEN_BREAK:
-        return "(break)\t\t\t";
+        return "(\e[37mcolon\e[0m)";
+    case TOKEN_EQUALS_ASSIGNMENT:
+        return "(\e[37mequals\e[0m)";
+    case TOKEN_KEYWORD:
+        return "(\e[34mkeyword\e[0m)";
     case TOKEN_INT_LITERAL:
-        return "(integer literal)\t";
+        return "(\e[37minteger literal\e[0m)";
     case TOKEN_STR_LITERAL:
-        return "(string literal)\t";
+        return "(\e[37mstring literal\e[0m)";
     case TOKEN_OPERATOR:
-        return "(operator)\t\t";
+        return "(\e[37moperator\e[0m)";
     default:
-        return "(Unreachable TokenType Name)\t\t";
+        return "(\e[31mUnreachable TokenType Name\e[0m)";
     }
-    return "";
+    return "Un-Reachable";
 }
 
 const Token stringToLiteralToken(const string &literalToken)
@@ -152,32 +174,29 @@ const Token stringToLiteralToken(const string &literalToken)
 }
 
 // FIXME: not sure of its use
-bool lexer_starts_with(Lexer *lexer, const string prefix)
-{
-    unsigned int prefix_len = prefix.size();
-
-    if (prefix_len == 0)
-    {
-        return true;
-    }
-    if (lexer->cursor + prefix_len - 1 >= lexer->content.size())
-    {
-        return false;
-    }
-    for (unsigned int i = 0; i < prefix_len; ++i)
-    {
-        if (prefix[i] != lexer->content[lexer->cursor + i])
-        {
-            return false;
-        }
-    }
-    return true;
-}
+// bool lexer_starts_with(Lexer *lexer, const string prefix)
+// {
+//     unsigned int prefix_len = prefix.size();
+//     if (prefix_len == 0)
+//     {
+//         return true;
+//     }
+//     if (lexer->cursor + prefix_len - 1 >= lexer->content.size())
+//     {
+//         return false;
+//     }
+//     for (unsigned int i = 0; i < prefix_len; ++i)
+//     {
+//         if (prefix[i] != lexer->content[lexer->cursor + i])
+//         {
+//             return false;
+//         }
+//     }
+//     return true;
+// }
 
 bool isIdentifierStart(char x) { return isalpha(x) || x == '_'; }
-
 bool isIdentifier(char x) { return isalnum(x) || x == '_'; }
-
 char getChar(Lexer *l) { return l->content[l->cursor]; }
 
 // TODO: unimplemented
@@ -188,16 +207,14 @@ Token getNextToken(Lexer *l)
     return tok;
 }
 
-// TODO: unimplemented
+// TODO: almost done
 vector<Token> tokenise(Lexer *l)
 {
     unsigned int content_len = l->content.size();
     if (l->cursor >= content_len)
-    {
         return {Token(TOKEN_EOF, "")};
-    }
-    vector<Token> tokens;
 
+    vector<Token> tokens;
     while (l->cursor < content_len)
     {
         while (l->content[l->cursor] == ' ')
@@ -213,27 +230,18 @@ vector<Token> tokenise(Lexer *l)
                 tokenName += getChar(l);
                 l->cursor++;
             }
-
-            if (tokenName == "switch")
+            bool isKeyword = false;
+            for (int i = 0; i < keywords_size; i++)
             {
-                tokens.push_back(Token(TOKEN_SWITCH, tokenName));
+                if (tokenName == keywords[i])
+                {
+                    tokens.push_back(Token(TOKEN_KEYWORD, tokenName));
+                    isKeyword = true;
+                    break;
+                }
             }
-            else if (tokenName == "case")
-            {
-                tokens.push_back(Token(TOKEN_CASE, tokenName));
-            }
-            else if (tokenName == "default")
-            {
-                tokens.push_back(Token(TOKEN_DEFAULT, tokenName));
-            }
-            else if (tokenName == "break")
-            {
-                tokens.push_back(Token(TOKEN_BREAK, tokenName));
-            }
-            else
-            {
+            if (!isKeyword)
                 tokens.push_back(Token(TOKEN_ID, tokenName));
-            }
         }
         else if (isdigit(getChar(l)))
         {
@@ -257,10 +265,8 @@ vector<Token> tokenise(Lexer *l)
                 tokens.push_back(Token(TOKEN_INVALID, number));
                 continue;
             }
-
             tokens.push_back(Token(TOKEN_INT_LITERAL, number));
         }
-
         else if (getChar(l) == '"')
         {
             string strLiteral;
@@ -305,7 +311,7 @@ vector<Token> tokenise(Lexer *l)
         }
         else if (getChar(l) == '=')
         {
-            tokens.push_back(Token(TOKEN_EQUALS, "="));
+            tokens.push_back(Token(TOKEN_EQUALS_ASSIGNMENT, "="));
             l->cursor++;
         }
         else if (isOperator(getChar(l)))
@@ -319,6 +325,11 @@ vector<Token> tokenise(Lexer *l)
             tokens.push_back(Token(TOKEN_EOF, ""));
             break;
         }
+        else if (getChar(l) == '\n')
+        {
+            l->cursor++;
+            continue;
+        }
         else
         { // TOKEN_INVALID
             // Handle errors (consider throwing exceptions or providing more specific error messages)
@@ -330,4 +341,4 @@ vector<Token> tokenise(Lexer *l)
     return tokens;
 }
 
-// #endif
+#endif

@@ -1,5 +1,6 @@
 #define LEXER_IMPLEMENTATION_
 #include "../include/lexer.hpp"
+// #include "../include/parser.hpp"
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -10,14 +11,14 @@ int main(int argc, char *argv[])
 
     if (argc == 1)
     {
-        cout << "Give the path of the file to tokenize the contents!\n\n";
+        cout << "Give the path of the file to tokenize the contents: ";
         // getline(cin, filepath);
     }
     else
     {
         filepath = argv[1];
     }
-
+    cout<<"\n\n";
     ifstream file(filepath);
     // Error handling
     if (!file.is_open())
@@ -32,25 +33,28 @@ int main(int argc, char *argv[])
     }
     string content = "";
     string line = "";
-    while (getline(file, line))
-    {
-        content += line + ' '; // cout << "line: " << line << "\n\n";
-    }
+    while (getline(file, line)) {content += line + '\n';}
+    content += ' ';
     file.close();
 
     cout << "file contents:\n";
     cout << "---------------------------------------------\n";
     cout << content << endl;
-    cout << "---------------------------------------------";
+    cout << "---------------------------------------------\n";
 
+    // tokenise the contents
     Lexer *lexer = new Lexer(content);
     auto tokens = tokenise(lexer);
 
     cout << "\n\nPrinting tokens along with the type of token:\n\n";
     for (auto &token : tokens)
     {
-        cout << tokenTypeName(token.type) << ": " << token.text << endl;
+        cout << setw(40) << left << tokenTypeName(token.type) << ": " << token.text << endl;
     }
+
+    // Parser *parser = new Parser(tokens);
+    // parser.parse();
+    // parser.printTree();
 
     return 0;
 }
