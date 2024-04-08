@@ -10,6 +10,10 @@ using namespace std;
 // to disable printing the file contents
 #define PRINT_FILE_CONTENTS 1
 
+
+// FIRST AND FOLLOW TABLE in images/FirstAndFollowTable.png
+// PREDICTIVE PARSING TABLE in images/PredictiveParsingTable.png
+
 int main(int argc, char *argv[]) {
     string filepath = "./tests/testSwitch.cpp";
 
@@ -67,7 +71,7 @@ int main(int argc, char *argv[]) {
     cout << "+---------------------------------------------+\n";
 
     cout << endl
-        //  << "Printing the level order of parse tree" << endl
+         //  << "Printing the level order of parse tree" << endl
          << endl;
     // parser->printTree();
 

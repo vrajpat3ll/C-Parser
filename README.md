@@ -8,7 +8,7 @@ I have attached the [reduced grammar](./GRAMMAR.md) that we worked on in this re
 
 # How to run
 
-1. While being in the curent repo, use the folowing command in the terminal to run. 
+1. While being in the <em>`curent repo`</em>, i.e., <em>`C-Parser`</em> use the folowing command in the terminal to run. 
 ```
 ./build <file_path_to_parse>
 ```
@@ -17,6 +17,8 @@ I have attached the [reduced grammar](./GRAMMAR.md) that we worked on in this re
 
 ---
 ## To Know
+1. First and Follow Table has been given [here](./images/FirstAndFollowTable.png).
+1. Predictive Parsing Table has been given [here](./images/PredictiveParsingTable.png).
 1. We used the following syntax to print colored text in terminal.
 ```cpp
 \e[<color code>m<text>\e[0m
