@@ -7,6 +7,7 @@ using namespace std;
 class Parser {
     int tokenIter = 0;
     vector<Token> tokenStream;
+    Token currentToken;
     void getNextToken();
     void error(const string &message);
     void labeled_statement_list();
@@ -25,7 +26,6 @@ class Parser {
         this->tokenStream = tokens;
         this->currentToken = tokens[0];
     }
-    Token currentToken;
     void parseSwitchStatement();
 };
 

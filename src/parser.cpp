@@ -10,7 +10,6 @@ using namespace std;
 // to disable printing the file contents
 #define PRINT_FILE_CONTENTS 1
 
-
 // FIRST AND FOLLOW TABLE in images/FirstAndFollowTable.png
 // PREDICTIVE PARSING TABLE in images/PredictiveParsingTable.png
 
@@ -24,23 +23,24 @@ int main(int argc, char *argv[]) {
         filepath = argv[1];
     }
     cout << "\n\n";
-    ifstream file(filepath);
-    // Error handling
-    if (!file.is_open()) {
-        cerr << "File could not be opened!" << endl;
-        return -1;
-    }
-    if (!file.good()) {
-        cerr << "File is not good!" << endl;
-        return 1;
-    }
     string content = "";
-    string line = "";
-    while (getline(file, line)) {
-        content += line + '\n';
+    {  // Using block to open a file in a nested scope
+        ifstream file(filepath);
+        // Error handling
+        if (!file.is_open()) {
+            cerr << "\e[31mFile could not be opened!\e[0m\n\n" << endl;
+            return -1;
+        }
+        if (!file.good()) {
+            cerr << "File is not good!" << endl;
+            return 1;
+        }
+        string line = "";
+        while (getline(file, line)) {
+            content += line + '\n';
+        }
+        content += ' ';
     }
-    content += ' ';
-    file.close();
 
 #if (PRINT_FILE_CONTENTS == 1)
     cout << "file contents:\n";
@@ -53,9 +53,9 @@ int main(int argc, char *argv[]) {
     Lexer *lexer = new Lexer(content);
     auto tokens = tokenise(lexer);
 
-    cout << "+---------------------------------------------+\n";
-    cout << "|          \e[32mTokenised successfully!\e[0m            |" << endl;
-    cout << "+---------------------------------------------+\n";
+    cout << "\e[32m+---------------------------------------------+\e[0m\n";
+    cout << "\e[32m|            Tokenised successfully!          |\e[0m" << endl;
+    cout << "\e[32m+---------------------------------------------+\e[0m\n";
 
     cout << "\n\nPrinting tokens along with the type of token:\n\n";
     for (auto &token : tokens) {
@@ -66,9 +66,9 @@ int main(int argc, char *argv[]) {
     Parser *parser = new Parser(tokens);
     parser->parseSwitchStatement();
 
-    cout << "+---------------------------------------------+\n";
-    cout << "|              \e[32mParsed completely!\e[0m             |" << endl;
-    cout << "+---------------------------------------------+\n";
+    cout << "\e[32m+---------------------------------------------+\e[0m\n";
+    cout << "\e[32m|              Parsed completely!             |\e[0m" << endl;
+    cout << "\e[32m+---------------------------------------------+\e[0m\n";
 
     cout << endl
          //  << "Printing the level order of parse tree" << endl

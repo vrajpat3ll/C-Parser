@@ -4,7 +4,6 @@
 #include <iostream>
 #include <vector>
 using namespace std;
-// #define len(s) sizeof(s) / sizeof(s[0])
 
 typedef enum {
     TOKEN_EOF,                // End of File
@@ -51,8 +50,8 @@ bool isOperator(char c) {
         case '-':
         case '*':
         case '/':
-        case '!':
-            // case '%':
+        // case '!':
+        // case '%':
             return true;
     }
     return false;
@@ -149,28 +148,6 @@ const Token stringToLiteralToken(const string &literalToken) {
     return Token(TOKEN_INVALID, literalToken);
 }
 
-// FIXME: not sure of its use
-// bool lexer_starts_with(Lexer *lexer, const string prefix)
-// {
-//     unsigned int prefix_len = prefix.size();
-//     if (prefix_len == 0)
-//     {
-//         return true;
-//     }
-//     if (lexer->cursor + prefix_len - 1 >= lexer->content.size())
-//     {
-//         return false;
-//     }
-//     for (unsigned int i = 0; i < prefix_len; ++i)
-//     {
-//         if (prefix[i] != lexer->content[lexer->cursor + i])
-//         {
-//             return false;
-//         }
-//     }
-//     return true;
-// }
-
 bool isIdentifierStart(char x) { return isalpha(x) || x == '_'; }
 bool isIdentifier(char x) { return isalnum(x) || x == '_'; }
 char getChar(Lexer *l) { return l->content[l->cursor]; }
@@ -178,7 +155,6 @@ char getChar(Lexer *l) { return l->content[l->cursor]; }
 // TODO: unimplemented
 Token getNextToken(Lexer *l) {
     Token tok;
-    auto s = l->content;
     return tok;
 }
 
